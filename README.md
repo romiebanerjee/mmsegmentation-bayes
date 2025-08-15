@@ -13,9 +13,20 @@ Upstream repo [README](https://github.com/open-mmlab/mmsegmentation/blob/main/RE
 ## Installation
 
 ```bash
+pip install -U openmim
+mim install mmcv
+
+git clone https://github.com/romiebanerjee/mmengine-bayes
+pip install -e mmengine-bayes/.
+
 git clone https://github.com/romiebanerjee/mmsegmentation-bayes
-cd mmsegmentation-bayes
-pip install -e .
+pip install -e mmsegmentation-bayes/.
+```
+```python 
+import sys
+sys.path.append('/path/to/mmsegmentation-bayes')
+sys.path.append('/path/to/mmengine-bayes')
+import mmcv, mmengine, mmseg
 ```
 
 ## Usage
