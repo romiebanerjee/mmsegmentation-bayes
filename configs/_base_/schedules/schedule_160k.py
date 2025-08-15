@@ -16,6 +16,10 @@ train_cfg = dict(
     type='IterBasedTrainLoop', max_iters=160000, val_interval=16000)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
+
+fisher_cfg = dict(type = 'FisherLoop', max_iters = 160000)
+test_unc_cfg = dict(type= 'TestUncLoop')
+
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     logger=dict(type='LoggerHook', interval=50, log_metric_by_epoch=False),
