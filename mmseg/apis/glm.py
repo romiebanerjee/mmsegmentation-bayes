@@ -64,7 +64,7 @@ class SegGLM():
         return pred_seg_logits, pred_seg_logits_stacked
 
 
-    def mcglm_predictive(self, image, eps, eig_idx, iters):
+    def mcglm_predictive(self, image, iters, eps=1e-6, eig_idx=None):
         """Use monte-carlo predictions to deserve GLM uncertainty"""
         pred_seg_logits, pred_seg_logits_stacked = self.monte_carlo_logits(image, eps, eig_idx, iters)
         A = (pred_seg_logits_stacked - pred_seg_logits)/eps
