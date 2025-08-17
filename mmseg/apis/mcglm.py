@@ -25,13 +25,11 @@ class MCGLM():
                 config:str, 
                 device:str, 
                 curvature_checkpoint:str,
-                inverse_curvature_checkpoint: Union[str, None]
                 ):
         self.n_labels = None   
         print('Loading base model ... ')     
         self.model = init_model(config, model_checkpoint, device=device)
         self.curvature_checkpoint = curvature_checkpoint
-        self.inv_curvature_checkpoint = inverse_curvature_checkpoint
         self.device = device
         self._init_kfac()
 
@@ -43,7 +41,7 @@ class MCGLM():
         print('Initiating KFAC object ...')
         self.kfac = KFAC(model = self.model, device = self.device)
 
-        state_dict = torch.load(self.curvature_checkpoint, map_location=self.device)
+        self.kfac.fisher = torch.load(self.curvature_checkpoint, map_location=self.device)
 
         self.kfac.kf_eigens()
         self.kfac.invert_cholesky()
