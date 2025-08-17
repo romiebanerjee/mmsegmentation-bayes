@@ -6,11 +6,12 @@ from mmseg.apis import inference_model, init_model, show_result_pyplot
 from mmengine.curvature import KFAC
 
 
-class MCGLM():
+class SegGLM():
     """
     Base class to initiate a GLM (Generalized Linear Model) based on a pre-trained segementor model.
-    A GLM of a pre-trained model f(theta, x) is the linar approximation of f at theta = pre-trained weights, and evaluated at a given x.
+    A GLM of a pre-trained model f(theta, x) is the linear approximation of f at theta = pre-trained weights, and evaluated at a given x.
     This is obtained in principle by taking the Jacobian of f at the pre-trained point
+
 
     Args:
         confg (str): path to model config file
@@ -47,7 +48,7 @@ class MCGLM():
         self.kfac.invert_cholesky()
         
 
-    def pred_seg_logits_mc(self, image, eps, eig_idx, iters):
+    def monte_carlo_logits(self, image, eps, eig_idx, iters):
         """produce logits from several monte carlo weight samples"""
         result = inference_model(self.model, image)
         pred_seg_logits = result.seg_logits.data #pred_logits.shape = (19,512,1024), 19 = no.of classes
@@ -63,16 +64,16 @@ class MCGLM():
         return pred_seg_logits, pred_seg_logits_stacked
 
 
-    def pred_seg_logits_uncertainty(self, image, eps, eig_idx, iters):
+    def mcglm_predictive(self, image, eps, eig_idx, iters):
         """Use monte-carlo predictions to deserve GLM uncertainty"""
-        pred_seg_logits, pred_seg_logits_stacked = self.pred_seg_logits_mc(image, eps, eig_idx, iters)
+        pred_seg_logits, pred_seg_logits_stacked = self.monte_carlo_logits(image, eps, eig_idx, iters)
         A = (pred_seg_logits_stacked - pred_seg_logits)/eps
         B = torch.matmul(A.permute(2,3,1,0), A.permute(2,3,0,1)) #B.shape = (512,1024,19,19)
         C = B.diagonal(offset=0, dim1=-1, dim2=-2).sum(-1) #C.shape = (512,1024)
         return C
 
 
-    def pred_seg_logits_unc_graded(self, image, eps, eig_idx, iters):
+    def mcglm_predictive_graded(self, image, eps, eig_idx, iters):
         pred_seg_logits, pred_seg_logits_stacked = self.pred_seg_logits_mc(image, eps, eig_idx, iters)
         A = (pred_seg_logits_stacked - pred_seg_logits)/eps
         C_graded = []
