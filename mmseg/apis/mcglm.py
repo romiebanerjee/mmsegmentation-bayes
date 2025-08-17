@@ -37,48 +37,17 @@ class MCGLM():
 
 
     def _init_kfac(self):
-
         """
         Load the KFAC object on GPU
         """
-
         print('Initiating KFAC object ...')
         self.kfac = KFAC(model = self.model, device = self.device)
 
-        print('Loading KFAC object from: ', self.curvature_checkpoint)
-        with open(self.curvature_checkpoint, 'rb') as f:
-            state_dict = pickle.load(f)
+        state_dict = torch.load(self.curvature_checkpoint, map_location=self.device)
 
-        if self.inv_curvature_checkpoint:
-            print("Inverse KFAC state found: ", self.inv_curvature_checkpoint)
-            with open(self.inv_curvature_checkpoint, 'rb') as f:
-                contents = pickle.load(f)
-
+        self.kfac.kf_eigens()
+        self.kfac.invert_cholesky()
         
-            if isinstance(contents, dict):
-                inv_state_dict = contents
-                eig_vals = None
-                eig_vecs = None
-
-
-            elif isinstance(contents, list):
-                if len(contents) == 1:
-                    inv_state_dict = contents[0]
-                    eig_vals = None
-                    eig_vecs = None
-                else:
-                    assert len(contents)==3, "expecting 3 dictionaries"
-                    print("KFAC eigenspaces found")
-                    inv_state_dict, eig_vals, eig_vecs = contents
-            else:
-                raise ValueError("Expecting dict or list")
-
-        else:
-            print("Inverse KFAC not found, calculating inverse ...")
-            inv_state_dict = None
-            eig_vals = None
-            eig_vecs = None
-        self.kfac = self.kfac.load(state_dict, inv_state_dict, eig_vals, eig_vecs)
 
     def pred_seg_logits_mc(self, image, eps, eig_idx, iters):
         """produce logits from several monte carlo weight samples"""
