@@ -29,7 +29,7 @@ sys.path.append('/path/to/mmengine-bayes')
 import mmcv, mmengine, mmseg
 ```
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](MMsehmentation-bayes installation and usage tutorial)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/romiebanerjee/mmsegmentation-bayes/blob/main/mmlab_bayes.ipynb)  [Tutorial Notebook](https://github.com/romiebanerjee/mmsegmentation-bayes/blob/main/mmlab_bayes.ipynb)
 
 ## Usage
 
