@@ -29,6 +29,8 @@ sys.path.append('/path/to/mmengine-bayes')
 import mmcv, mmengine, mmseg
 ```
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](MMsehmentation-bayes installation and usage tutorial)
+
 ## Usage
 
 ### Estimate Fisher of a pre-trained model
